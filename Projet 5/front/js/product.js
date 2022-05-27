@@ -1,10 +1,14 @@
-//get current procut id and call api
+// call api
 function main() {
-  let id = new URLSearchParams(window.location.search).get("id");
-  fetch("http://grossebeut.eu:3000/api/products/" + id)
+  fetch("http://grossebeut.eu:3000/api/products/" + getId())
     .then(handleErrors)
     .then(response => response.json().then(createProduct))
-    .catch(() => (window.location.href = "./index.html"));
+    .catch(() => (location.href = "./index.html"));
+}
+
+// get current procut id from query args
+function getId() {
+  return new URLSearchParams(location.search).get("id");
 }
 
 // modify page to add product info
@@ -18,6 +22,7 @@ function createProduct(product) {
   document.getElementById("title").innerText = product.name;
   document.getElementById("price").innerText = product.price;
   document.getElementById("description").innerText = product.description;
+  document.getElementById("addToCart").onclick = addToCart;
 
   product.colors.forEach(color => {
     let option = document.createElement("option");
@@ -25,6 +30,34 @@ function createProduct(product) {
     option.innerText = color;
     document.getElementById("colors").appendChild(option);
   });
+}
+
+// check if correct values selected
+function checkValues(values) {
+  if (values.color === "") {
+    alert("Séléctionnez une couleur!");
+    return false;
+  }
+  return true;
+}
+
+// add selected values to localstorage cart
+function addToCart() {
+  let values = {
+    id: getId(),
+    quantity: document.getElementById("quantity").value,
+    color: document.getElementById("colors").value
+  };
+
+  if (checkValues(values)) {
+    let cart;
+    if (!(cart = JSON.parse(localStorage.getItem("cart")))) {
+      cart = [];
+    }
+
+    cart.push(values);
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
 }
 
 // handle fetch error
