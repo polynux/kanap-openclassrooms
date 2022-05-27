@@ -9,6 +9,9 @@ async function main() {
     return;
   }
 
+  let price = 0;
+  let quantity = 0;
+
   cart.forEach(product => {
     let originalProduct = getProduct(product.id, originalProducts);
     product = {
@@ -19,8 +22,14 @@ async function main() {
       price: originalProduct.price
     };
 
+    price += product.price * product.quantity;
+    quantity += Number(product.quantity);
+
     productList.appendChild(createProduct(product));
   });
+
+  document.getElementById("totalQuantity").innerText = quantity;
+  document.getElementById("totalPrice").innerText = price;
 }
 
 function getProduct(id, products) {
