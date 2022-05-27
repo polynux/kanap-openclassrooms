@@ -1,4 +1,5 @@
-async function main() {
+//get current procut id and call api
+function main() {
   let id = new URLSearchParams(window.location.search).get("id");
   fetch("http://grossebeut.eu:3000/api/products/" + id)
     .then(handleErrors)
@@ -6,6 +7,7 @@ async function main() {
     .catch(() => (window.location.href = "./index.html"));
 }
 
+// modify page to add product info
 function createProduct(product) {
   let img = document.createElement("img");
   img.setAttribute("src", product.imageUrl);
@@ -25,6 +27,7 @@ function createProduct(product) {
   });
 }
 
+// handle fetch error
 function handleErrors(response) {
   if (!response.ok) {
     throw Error(response.statusText);
