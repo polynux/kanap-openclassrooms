@@ -10,7 +10,6 @@ async function main() {
   }
 
   let price = 0;
-  let quantity = 0;
 
   cart.forEach(product => {
     let originalProduct = getProduct(product.id, originalProducts);
@@ -23,13 +22,12 @@ async function main() {
     };
 
     price += product.price * product.quantity;
-    quantity += Number(product.quantity);
 
     productList.appendChild(createProduct(product));
   });
 
-  document.getElementById("totalQuantity").innerText = quantity;
-  document.getElementById("totalPrice").innerText = price;
+  document.getElementById("totalQuantity").innerText = getTotalQuantity();
+  document.getElementById("totalPrice").innerText = getTotalPrice();
 }
 
 function getProduct(id, products) {
@@ -41,6 +39,25 @@ function getProduct(id, products) {
   return product;
 }
 
+function getTotalPrice() {
+  let price = 0;
+  let prices = document.getElementsByClassName("itemPrice");
+  let quantities = document.getElementsByClassName("itemQuantity");
+  for (let i = 0; i < prices.length; i++) {
+    price += parseInt(prices[i].innerText) * parseInt(quantities[i].value);
+  }
+  return price;
+}
+
+function getTotalQuantity() {
+  let quantity = 0;
+  let items = document.getElementsByClassName("itemQuantity");
+  for (let i = 0; i < items.length; i++) {
+    quantity += Number(items[i].value);
+  }
+  return quantity;
+}
+
 function createProduct(product) {
   let html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
     <div class="cart__item__img">
@@ -50,7 +67,7 @@ function createProduct(product) {
       <div class="cart__item__content__description">
         <h2>${product.name}</h2>
         <p>${product.color}</p>
-        <p>${product.price} €</p>
+        <p class="itemPrice">${product.price} €</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
