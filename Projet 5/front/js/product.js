@@ -1,8 +1,9 @@
 async function main() {
   let id = new URLSearchParams(window.location.search).get("id");
-  let product = await (await fetch("http://grossebeut.eu:3000/api/products/" + id)).json();
-
-  createProduct(product);
+  fetch("http://grossebeut.eu:3000/api/products/" + id)
+    .then(handleErrors)
+    .then(response => response.json().then(createProduct))
+    .catch(() => (window.location.href = "./index.html"));
 }
 
 function createProduct(product) {
@@ -22,6 +23,13 @@ function createProduct(product) {
     option.innerText = color;
     document.getElementById("colors").appendChild(option);
   });
+}
+
+function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
 }
 
 main();
