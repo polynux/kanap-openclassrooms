@@ -23,7 +23,15 @@ async function main() {
 
     price += product.price * product.quantity;
 
-    productList.appendChild(createProduct(product));
+    let productElement = createProduct(product);
+
+    productElement.addEventListener("click", e=> {
+      if (e.target.className === "deleteItem") {
+        productElement.remove();
+      }
+    })
+
+    productList.appendChild(productElement);
   });
 
   document.getElementById("totalQuantity").innerText = getTotalQuantity();
