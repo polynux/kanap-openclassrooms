@@ -9,7 +9,7 @@ async function main() {
 }
 
 function createProduct(product) {
-  let html = `<a href="./product.html?id=${product._id}">
+  let html = `<a href="./product?id=${product._id}">
     <article>
       <img src="${product.imageUrl}" alt="${product.altTxt}" />
       <h3 class="productName">${product.name}</h3>
