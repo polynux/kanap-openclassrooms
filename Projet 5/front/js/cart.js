@@ -1,73 +1,89 @@
+function getCart() {
+    let cart;
+    if (!(cart = JSON.parse(localStorage.getItem("cart")))) {
+        cart = [];
+    }
+    return cart;
+}
+
+function removeItemFromCart(id, color) {
+    let cart = getCart();
+    cart = cart.filter(item => item.id !== id && item.color !== color);
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
 async function main() {
-  let cart = JSON.parse(localStorage.getItem("cart"));
+    let cart = getCart();
 
-  let productList = document.getElementById("cart__items");
-  const originalProducts = await (await fetch("http://grossebeut.eu:3000/api/products")).json();
+    let productList = document.getElementById("cart__items");
 
-  if (!cart) {
-    productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
-    return;
-  }
+    if (!cart) {
+        productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
+        return;
+    }
 
-  let price = 0;
+    const originalProducts = await (await fetch("http://grossebeut.eu:3000/api/products")).json();
 
-  cart.forEach(product => {
-    let originalProduct = getProduct(product.id, originalProducts);
-    product = {
-      ...product,
-      imageUrl: originalProduct.imageUrl,
-      altTxt: originalProduct.altTxt,
-      name: originalProduct.name,
-      price: originalProduct.price
-    };
+    let price = 0;
 
-    price += product.price * product.quantity;
+    cart.forEach(product => {
+        let originalProduct = getProduct(product.id, originalProducts);
+        product = {
+            ...product,
+            imageUrl: originalProduct.imageUrl,
+            altTxt: originalProduct.altTxt,
+            name: originalProduct.name,
+            price: originalProduct.price
+        };
 
-    let productElement = createProduct(product);
+        price += product.price * product.quantity;
 
-    productElement.addEventListener("click", e=> {
-      if (e.target.className === "deleteItem") {
-        productElement.remove();
-      }
-    })
+        let productElement = createProduct(product);
 
-    productList.appendChild(productElement);
-  });
+        productElement.addEventListener("click", e => {
+            if (e.target.className === "deleteItem") {
+                removeItemFromCart(product.id, product.color);
+                productElement.remove();
+            }
+        })
 
-  document.getElementById("totalQuantity").innerText = getTotalQuantity();
-  document.getElementById("totalPrice").innerText = getTotalPrice();
+        productList.appendChild(productElement);
+    });
+
+    document.getElementById("totalQuantity").innerText = getTotalQuantity();
+    document.getElementById("totalPrice").innerText = getTotalPrice();
 }
 
 function getProduct(id, products) {
-  let product;
-  products.forEach(element => {
-    if (element._id === id) product = element;
-  });
+    let product;
+    products.forEach(element => {
+        if (element._id === id) product = element;
+    });
 
-  return product;
+    return product;
 }
 
 function getTotalPrice() {
-  let price = 0;
-  let prices = document.getElementsByClassName("itemPrice");
-  let quantities = document.getElementsByClassName("itemQuantity");
-  for (let i = 0; i < prices.length; i++) {
-    price += parseInt(prices[i].innerText) * parseInt(quantities[i].value);
-  }
-  return price;
+    let price = 0;
+    let prices = document.getElementsByClassName("itemPrice");
+    let quantities = document.getElementsByClassName("itemQuantity");
+    for (let i = 0; i < prices.length; i++) {
+        price += parseInt(prices[i].innerText) * parseInt(quantities[i].value);
+    }
+    return price;
 }
 
 function getTotalQuantity() {
-  let quantity = 0;
-  let items = document.getElementsByClassName("itemQuantity");
-  for (let i = 0; i < items.length; i++) {
-    quantity += Number(items[i].value);
-  }
-  return quantity;
+    let quantity = 0;
+    let items = document.getElementsByClassName("itemQuantity");
+    for (let i = 0; i < items.length; i++) {
+        quantity += Number(items[i].value);
+    }
+    return quantity;
 }
 
 function createProduct(product) {
-  let html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+    let html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
     <div class="cart__item__img">
       <img src="${product.imageUrl}" alt="${product.altTxt}" />
     </div>
@@ -89,13 +105,13 @@ function createProduct(product) {
     </div>
   </article>`;
 
-  return createElementFromHTML(html);
+    return createElementFromHTML(html);
 }
 
 function createElementFromHTML(htmlString) {
-  var div = document.createElement("div");
-  div.innerHTML = htmlString.trim();
-  return div.firstChild;
+    var div = document.createElement("div");
+    div.innerHTML = htmlString.trim();
+    return div.firstChild;
 }
 
 main();
