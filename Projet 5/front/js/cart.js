@@ -28,12 +28,11 @@ class Cart {
 
             productElement.addEventListener("click", e => {
                 if (e.target.className === "deleteItem") {
-                    this.removeProduct(product.id, product.color);
+                    this.removeProduct(product);
                     productElement.remove();
                 }
-
-                if (e.target.className === "itemQuantity") {
-                    this.setProductQuantity({id: product.id, color: product.color, quantity: e.target.value});
+                else if (e.target.className === "itemQuantity") {
+                    this.setProductQuantity({ id: product.id, color: product.color, quantity: e.target.value });
                 }
             })
 
@@ -70,7 +69,6 @@ class Cart {
         });
 
         this.writeCartToLocalStorage();
-        this.draw();
     }
 
     writeCartToLocalStorage() {
@@ -82,6 +80,7 @@ class Cart {
             }
         })
         localStorage.setItem("cart", JSON.stringify(cleanCart));
+        this.draw();
     }
 
     removeProduct({ id, color }) {
