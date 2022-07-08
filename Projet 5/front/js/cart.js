@@ -37,7 +37,30 @@ class Cart {
             })
 
             productList.appendChild(productElement);
-        })
+        });
+
+        document.getElementById("totalQuantity").innerText = this.getTotalQuantity();
+        document.getElementById("totalPrice").innerText = this.getTotalPrice();
+    }
+
+    getTotalQuantity() {
+        let totalQuantity = 0;
+
+        this.cart.forEach(product => {
+            totalQuantity += Number(product.quantity);
+        });
+
+        return totalQuantity;
+    }
+
+    getTotalPrice() {
+        let totalPrice = 0;
+
+        this.cart.forEach(product => {
+            totalPrice += product.price;
+        });
+
+        return totalPrice;
     }
 
     createProductListForCart() {
@@ -54,7 +77,7 @@ class Cart {
             };
         });
 
-        this.cart = this.cart.sort((a,b) => a.name.localeCompare(b.name) >= 0 ? 1 : -1 );
+        this.cart = this.cart.sort((a, b) => a.name.localeCompare(b.name) >= 0 ? 1 : -1);
     }
 
     getCartFromLocalStorage() {
@@ -91,33 +114,9 @@ class Cart {
     }
 }
 
-function drawCart() {
-    document.getElementById("totalQuantity").innerText = getTotalQuantity();
-    document.getElementById("totalPrice").innerText = getTotalPrice();
-}
-
 function main() {
     let cart = new Cart();
     cart.init();
-}
-
-function getTotalPrice() {
-    let price = 0;
-    let prices = document.getElementsByClassName("itemPrice");
-    let quantities = document.getElementsByClassName("itemQuantity");
-    for (let i = 0; i < prices.length; i++) {
-        price += parseInt(prices[i].innerText) * parseInt(quantities[i].value);
-    }
-    return price;
-}
-
-function getTotalQuantity() {
-    let quantity = 0;
-    let items = document.getElementsByClassName("itemQuantity");
-    for (let i = 0; i < items.length; i++) {
-        quantity += Number(items[i].value);
-    }
-    return quantity;
 }
 
 function createProduct(product) {
