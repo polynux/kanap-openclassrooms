@@ -59,7 +59,14 @@ class Cart {
     }
 
     #writeCartToLocalStorage() {
-        localStorage.setItem("cart", JSON.stringify(this.cart));
+        let cleanCart = this.cart.map(product => {
+            return {
+                id: product.id,
+                color: product.color,
+                quantity: product.quantity
+            }
+        })
+        localStorage.setItem("cart", JSON.stringify(cleanCart));
     }
 
     removeProduct(id, color) {
