@@ -57,7 +57,7 @@ class Cart {
         let totalPrice = 0;
 
         this.cart.forEach(product => {
-            totalPrice += product.price;
+            totalPrice += Number(product.price) * Number(product.quantity);
         });
 
         return totalPrice;
