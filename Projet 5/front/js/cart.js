@@ -8,8 +8,8 @@ class Cart {
             .then(res => res.json())
             .then(originalProducts => {
                 this.originalProducts = originalProducts;
-                this.#getCartFromLocalStorage();
-                this.#createProductListForCart();
+                this.getCartFromLocalStorage();
+                this.createProductListForCart();
                 this.draw();
             });
     }
@@ -31,13 +31,17 @@ class Cart {
                     this.removeProduct(product.id, product.color);
                     productElement.remove();
                 }
+
+                if (e.target.className === "itemQuantity") {
+                    this.setProductQuantity({id: product.id, color: product.color, quantity: e.target.value});
+                }
             })
 
             productList.appendChild(productElement);
         })
     }
 
-    #createProductListForCart() {
+    createProductListForCart() {
         if (!this.cart) return;
 
         this.cart.forEach((product, index) => {
@@ -52,13 +56,24 @@ class Cart {
         });
     }
 
-    #getCartFromLocalStorage() {
+    getCartFromLocalStorage() {
         if (!(this.cart = JSON.parse(localStorage.getItem("cart")))) {
             this.cart = [];
         }
     }
 
-    #writeCartToLocalStorage() {
+    setProductQuantity({ id, color, quantity }) {
+        this.cart.forEach((product, index) => {
+            if (product.id === id && product.color === color) {
+                this.cart[index].quantity = quantity;
+            }
+        });
+
+        this.writeCartToLocalStorage();
+        this.draw();
+    }
+
+    writeCartToLocalStorage() {
         let cleanCart = this.cart.map(product => {
             return {
                 id: product.id,
@@ -69,9 +84,9 @@ class Cart {
         localStorage.setItem("cart", JSON.stringify(cleanCart));
     }
 
-    removeProduct(id, color) {
+    removeProduct({ id, color }) {
         this.cart = this.cart.filter(product => product.id !== id | product.color !== color);
-        this.#writeCartToLocalStorage();
+        this.writeCartToLocalStorage();
     }
 }
 
