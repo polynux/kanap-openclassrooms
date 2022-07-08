@@ -4,11 +4,13 @@ class Cart {
     }
 
     init() {
+        this.getCartFromLocalStorage();
+        if (this.cart.length === 0) this.draw();
+
         fetch("http://grossebeut.eu:3000/api/products")
             .then(res => res.json())
             .then(originalProducts => {
                 this.originalProducts = originalProducts;
-                this.getCartFromLocalStorage();
                 this.createProductListForCart();
                 this.draw();
             });
