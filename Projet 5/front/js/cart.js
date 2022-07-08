@@ -62,12 +62,8 @@ class Cart {
         localStorage.setItem("cart", JSON.stringify(this.cart));
     }
 
-    getProducts() {
-        return this.products;
-    }
-
     removeProduct(id, color) {
-        this.cart = this.cart.filter(product => product.id !== id && product.color !== color);
+        this.cart = this.cart.filter(product => product.id !== id | product.color !== color);
         this.#writeCartToLocalStorage();
     }
 }
@@ -80,15 +76,6 @@ function drawCart() {
 function main() {
     let cart = new Cart();
     cart.init();
-}
-
-function getProduct(id, products) {
-    let product;
-    products.forEach(element => {
-        if (element._id === id) product = element;
-    });
-
-    return product;
 }
 
 function getTotalPrice() {
