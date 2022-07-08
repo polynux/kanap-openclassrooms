@@ -26,7 +26,7 @@ class Cart {
         }
 
         this.cart.forEach(product => {
-            let productElement = createProduct(product);
+            let productElement = this.createProduct(product);
 
             productElement.addEventListener("click", e => {
                 if (e.target.className === "deleteItem") {
@@ -114,37 +114,37 @@ class Cart {
         this.cart = this.cart.filter(product => product.id !== id | product.color !== color);
         this.writeCartToLocalStorage();
     }
+
+    createProduct(product) {
+        let html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+            <div class="cart__item__img">
+              <img src="${product.imageUrl}" alt="${product.altTxt}" />
+            </div>
+            <div class="cart__item__content">
+              <div class="cart__item__content__description">
+                <h2>${product.name}</h2>
+                <p>${product.color}</p>
+                <p class="itemPrice">${product.price} €</p>
+              </div>
+              <div class="cart__item__content__settings">
+                <div class="cart__item__content__settings__quantity">
+                  <p>Qté :</p>
+                  <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}" />
+                </div>
+                <div class="cart__item__content__settings__delete">
+                  <p class="deleteItem">Supprimer</p>
+                </div>
+              </div>
+            </div>
+          </article>`;
+
+        return createElementFromHTML(html);
+    }
 }
 
 function main() {
     let cart = new Cart();
     cart.init();
-}
-
-function createProduct(product) {
-    let html = `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
-    <div class="cart__item__img">
-      <img src="${product.imageUrl}" alt="${product.altTxt}" />
-    </div>
-    <div class="cart__item__content">
-      <div class="cart__item__content__description">
-        <h2>${product.name}</h2>
-        <p>${product.color}</p>
-        <p class="itemPrice">${product.price} €</p>
-      </div>
-      <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-          <p>Qté :</p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}" />
-        </div>
-        <div class="cart__item__content__settings__delete">
-          <p class="deleteItem">Supprimer</p>
-        </div>
-      </div>
-    </div>
-  </article>`;
-
-    return createElementFromHTML(html);
 }
 
 function createElementFromHTML(htmlString) {
@@ -154,3 +154,12 @@ function createElementFromHTML(htmlString) {
 }
 
 main();
+
+function getQueryArguments() {
+    let urlParams = new URLSearchParams(location.search);
+    return Object.fromEntries(urlParams.entries());
+}
+
+let queriesName = Array.from(document.querySelectorAll("input[required]")).map(input => input.name);
+let queryArguments = getQueryArguments();
+
