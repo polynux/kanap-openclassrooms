@@ -1,6 +1,5 @@
 class Cart {
     constructor() {
-        this.products = [];
         this.cart = [];
     }
 
@@ -10,6 +9,7 @@ class Cart {
             .then(originalProducts => {
                 this.originalProducts = originalProducts;
                 this.#getCartFromLocalStorage();
+                this.#createProductListForCart();
                 this.draw();
             });
     }
@@ -18,12 +18,12 @@ class Cart {
         let productList = document.getElementById("cart__items");
         productList.innerHTML = '';
 
-        if (this.products.length === 0) {
+        if (this.cart.length === 0) {
             productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
             return;
         }
 
-        this.products.forEach(product => {
+        this.cart.forEach(product => {
             let productElement = createProduct(product);
 
             productElement.addEventListener("click", e => {
@@ -37,9 +37,24 @@ class Cart {
         })
     }
 
+    #createProductListForCart() {
+        if (!this.cart) return;
+
+        this.cart.forEach((product, index) => {
+            let originalProduct = this.originalProducts.filter(originalProduct => originalProduct._id === product.id)[0];
+            this.cart[index] = {
+                ...product,
+                imageUrl: originalProduct.imageUrl,
+                altTxt: originalProduct.altTxt,
+                name: originalProduct.name,
+                price: originalProduct.price
+            };
+        });
+    }
+
     #getCartFromLocalStorage() {
-        if (!(this.products = JSON.parse(localStorage.getItem("cart")))) {
-            this.products = [];
+        if (!(this.cart = JSON.parse(localStorage.getItem("cart")))) {
+            this.cart = [];
         }
     }
 
@@ -58,28 +73,6 @@ class Cart {
 }
 
 function drawCart() {
-    cart.forEach(product => {
-        let originalProduct = getProduct(product.id, originalProducts);
-        product = {
-            ...product,
-            imageUrl: originalProduct.imageUrl,
-            altTxt: originalProduct.altTxt,
-            name: originalProduct.name,
-            price: originalProduct.price
-        };
-
-        let productElement = createProduct(product);
-
-        productElement.addEventListener("click", e => {
-            if (e.target.className === "deleteItem") {
-                removeItemFromCart(product.id, product.color);
-                productElement.remove();
-            }
-        })
-
-        productList.appendChild(productElement);
-    });
-
     document.getElementById("totalQuantity").innerText = getTotalQuantity();
     document.getElementById("totalPrice").innerText = getTotalPrice();
 }
