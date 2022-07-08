@@ -1,31 +1,63 @@
-function getCart() {
-    let cart;
-    if (!(cart = JSON.parse(localStorage.getItem("cart")))) {
-        cart = [];
-    }
-    return cart;
-}
-
-function removeItemFromCart(id, color) {
-    let cart = getCart();
-    cart = cart.filter(item => item.id !== id && item.color !== color);
-    localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-async function main() {
-    let cart = getCart();
-
-    let productList = document.getElementById("cart__items");
-
-    if (!cart) {
-        productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
-        return;
+class Cart {
+    constructor() {
+        this.products = [];
+        this.cart = [];
     }
 
-    const originalProducts = await (await fetch("http://grossebeut.eu:3000/api/products")).json();
+    init() {
+        fetch("http://grossebeut.eu:3000/api/products")
+            .then(res => res.json())
+            .then(originalProducts => {
+                this.originalProducts = originalProducts;
+                this.#getCartFromLocalStorage();
+                this.draw();
+            });
+    }
 
-    let price = 0;
+    draw() {
+        let productList = document.getElementById("cart__items");
+        productList.innerHTML = '';
 
+        if (this.products.length === 0) {
+            productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
+            return;
+        }
+
+        this.products.forEach(product => {
+            let productElement = createProduct(product);
+
+            productElement.addEventListener("click", e => {
+                if (e.target.className === "deleteItem") {
+                    this.removeProduct(product.id, product.color);
+                    productElement.remove();
+                }
+            })
+
+            productList.appendChild(productElement);
+        })
+    }
+
+    #getCartFromLocalStorage() {
+        if (!(this.products = JSON.parse(localStorage.getItem("cart")))) {
+            this.products = [];
+        }
+    }
+
+    #writeCartToLocalStorage() {
+        localStorage.setItem("cart", JSON.stringify(this.cart));
+    }
+
+    getProducts() {
+        return this.products;
+    }
+
+    removeProduct(id, color) {
+        this.cart = this.cart.filter(product => product.id !== id && product.color !== color);
+        this.#writeCartToLocalStorage();
+    }
+}
+
+function drawCart() {
     cart.forEach(product => {
         let originalProduct = getProduct(product.id, originalProducts);
         product = {
@@ -35,8 +67,6 @@ async function main() {
             name: originalProduct.name,
             price: originalProduct.price
         };
-
-        price += product.price * product.quantity;
 
         let productElement = createProduct(product);
 
@@ -52,6 +82,11 @@ async function main() {
 
     document.getElementById("totalQuantity").innerText = getTotalQuantity();
     document.getElementById("totalPrice").innerText = getTotalPrice();
+}
+
+function main() {
+    let cart = new Cart();
+    cart.init();
 }
 
 function getProduct(id, products) {
