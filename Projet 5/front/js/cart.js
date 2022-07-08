@@ -53,6 +53,8 @@ class Cart {
                 price: originalProduct.price
             };
         });
+
+        this.cart = this.cart.sort((a,b) => a.name.localeCompare(b.name) >= 0 ? 1 : -1 );
     }
 
     getCartFromLocalStorage() {
