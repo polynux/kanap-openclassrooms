@@ -22,6 +22,8 @@ class Cart {
 
         if (this.cart.length === 0) {
             productList.appendChild(createElementFromHTML("<p>Votre panier est vide!</p>"));
+            document.getElementById("totalQuantity").innerText = 0;
+            document.getElementById("totalPrice").innerText = 0;
             return;
         }
 
@@ -142,9 +144,79 @@ class Cart {
     }
 }
 
+function isEmailValid(email) {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(email);
+};
+
+function isNameValid(word) {
+    const regex = /^[a-zA-Z]*$/;
+    return regex.test(word);
+}
+
+function isAddressValid(address) {
+    const regex = /^[a-zA-Z0-9 ]*$/;
+    return regex.test(address);
+}
+
+function setErrMsg(field, name = undefined) {
+    let message = "";
+    if (name) {
+        message = `Votre ${name} contient un caractère non autorisé`;
+    }
+    field.nextElementSibling.innerText = message;
+}
+
+function checkFields() {
+    let firstName = document.querySelector("#firstName");
+    let lastName = document.querySelector("#lastName");
+    let address = document.querySelector("#address");
+    let city = document.querySelector("#city");
+    let email = document.querySelector("#email");
+
+    (firstName["valid"] = isNameValid(firstName.value)) ? setErrMsg(firstName) : setErrMsg(firstName, "Prénom");
+    (lastName["valid"] = isNameValid(lastName.value)) ? setErrMsg(lastName) : setErrMsg(lastName, "Nom");
+    (address["valid"] = isAddressValid(address.value)) ? setErrMsg(address) : setErrMsg(address, "Adresse");
+    (city["valid"] = isNameValid(city.value)) ? setErrMsg(city) : setErrMsg(city, "Ville");
+    (email["valid"] = isEmailValid(email.value)) ? setErrMsg(email) : setErrMsg(email, "Email");
+
+    return firstName.valid && lastName.valid && address.valid && city.valid && email.valid;
+}
+
+function submitForm() {
+    console.log("submit");
+    console.log(JSON.parse(localStorage.getItem("cart")));
+    // let xhr = new XMLHttpRequest();
+    // xhr.open("POST", "https://reqbin.com/echo/post/json");
+
+    // xhr.setRequestHeader("Accept", "application/json");
+    // xhr.setRequestHeader("Content-Type", "application/json");
+
+    // xhr.onload = () => console.log(xhr.responseText);
+
+    // let data = {
+    //     "Id": 78912,
+    //     "Customer": "Jason Sweet",
+    // };
+
+    // xhr.send(data);
+}
+
+function form() {
+    let order = document.querySelector("#order");
+    order.addEventListener("click", e => {
+        e.preventDefault();
+        if (checkFields()) {
+            submitForm();
+        }
+    })
+
+}
+
 function main() {
     let cart = new Cart();
     cart.init();
+    form();
 }
 
 function createElementFromHTML(htmlString) {
@@ -154,12 +226,3 @@ function createElementFromHTML(htmlString) {
 }
 
 main();
-
-function getQueryArguments() {
-    let urlParams = new URLSearchParams(location.search);
-    return Object.fromEntries(urlParams.entries());
-}
-
-let queriesName = Array.from(document.querySelectorAll("input[required]")).map(input => input.name);
-let queryArguments = getQueryArguments();
-
