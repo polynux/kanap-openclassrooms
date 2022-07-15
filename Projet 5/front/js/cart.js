@@ -209,13 +209,19 @@ function submitForm(cart) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
-    }).then(res => res.json()).then(console.log);
+    }).then(res => res.json()).then(res => {
+        location.href = "/confirmation?orderId=" + res.orderId;
+    });
 }
 
 function form(cart) {
     let order = document.querySelector("#order");
     order.addEventListener("click", e => {
         e.preventDefault();
+        if (cart.cart.length === 0) {
+            alert("Votre panier est vide!");
+            return;
+        }
         if (checkFields()) {
             submitForm(cart);
         }
