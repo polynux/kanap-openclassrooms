@@ -1,6 +1,8 @@
+const url = "http://grossebeut.eu:3000/api";
+
 // call api
 function main() {
-    fetch("http://grossebeut.eu:3000/api/products/" + getId())
+    fetch(url + "/products/" + getId())
         .then(handleErrors)
         .then(response => response.json().then(createProduct))
         .catch(() => (location.href = "./index.html"));

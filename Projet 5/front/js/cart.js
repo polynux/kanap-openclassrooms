@@ -1,3 +1,5 @@
+const url = "http://grossebeut.eu:3000/api";
+
 class Cart {
     constructor() {
         this.cart = [];
@@ -7,7 +9,7 @@ class Cart {
         this.getCartFromLocalStorage();
         if (this.cart.length === 0) this.draw();
 
-        fetch("http://grossebeut.eu:3000/api/products")
+        fetch(url + "/products")
             .then(res => res.json())
             .then(originalProducts => {
                 this.originalProducts = originalProducts;
@@ -202,7 +204,7 @@ function submitForm(cart) {
         products
     };
 
-    fetch("http://grossebeut.eu:3000/api/products/order", {
+    fetch(url + "/products/order", {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

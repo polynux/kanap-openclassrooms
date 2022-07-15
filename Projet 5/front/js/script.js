@@ -1,5 +1,7 @@
+const url = "http://grossebeut.eu:3000/api";
+
 async function main() {
-  let products = await (await fetch("http://grossebeut.eu:3000/api/products")).json();
+  let products = await (await fetch(url + "/products")).json();
 
   let items = document.getElementById("items");
 
