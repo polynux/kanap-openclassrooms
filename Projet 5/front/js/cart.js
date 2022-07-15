@@ -213,9 +213,15 @@ function submitForm(cart) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
-    }).then(res => res.json()).then(res => {
-        location.href = "/confirmation?orderId=" + res.orderId;
-    });
+    })
+        .then(res => {
+            if (!res.ok) throw "Une erreur est survenue!";
+            return res.json();
+        })
+        .then(res => {
+            location.href = "/confirmation?orderId=" + res.orderId;
+        })
+        .catch(alert);
 }
 
 // watch submit button click event
