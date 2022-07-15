@@ -169,6 +169,7 @@ function setErrMsg(field, name = undefined) {
     field.nextElementSibling.innerText = message;
 }
 
+// check if input is valid. if not, write an error message
 function checkFields() {
     let firstName = document.querySelector("#firstName");
     let lastName = document.querySelector("#lastName");
@@ -185,6 +186,7 @@ function checkFields() {
     return firstName.valid && lastName.valid && address.valid && city.valid && email.valid;
 }
 
+//submit form to server and redirect to confirmation page
 function submitForm(cart) {
     let firstName = document.querySelector("#firstName").value;
     let lastName = document.querySelector("#lastName").value;
@@ -216,6 +218,7 @@ function submitForm(cart) {
     });
 }
 
+// watch submit button click event
 function form(cart) {
     let order = document.querySelector("#order");
     order.addEventListener("click", e => {
@@ -231,6 +234,7 @@ function form(cart) {
 
 }
 
+// init cart object and call form function with cart
 function main() {
     let cart = new Cart();
     cart.init();
