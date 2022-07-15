@@ -183,31 +183,41 @@ function checkFields() {
     return firstName.valid && lastName.valid && address.valid && city.valid && email.valid;
 }
 
-function submitForm() {
-    console.log("submit");
-    console.log(JSON.parse(localStorage.getItem("cart")));
-    // let xhr = new XMLHttpRequest();
-    // xhr.open("POST", "https://reqbin.com/echo/post/json");
+function submitForm(cart) {
+    let firstName = document.querySelector("#firstName").value;
+    let lastName = document.querySelector("#lastName").value;
+    let address = document.querySelector("#address").value;
+    let city = document.querySelector("#city").value;
+    let email = document.querySelector("#email").value;
 
-    // xhr.setRequestHeader("Accept", "application/json");
-    // xhr.setRequestHeader("Content-Type", "application/json");
+    let products = cart.cart.map(product => product.id);
+    let body = {
+        contact: {
+            firstName,
+            lastName,
+            address,
+            city,
+            email
+        },
+        products
+    };
 
-    // xhr.onload = () => console.log(xhr.responseText);
-
-    // let data = {
-    //     "Id": 78912,
-    //     "Customer": "Jason Sweet",
-    // };
-
-    // xhr.send(data);
+    fetch("http://grossebeut.eu:3000/api/products/order", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }).then(res => res.json()).then(console.log);
 }
 
-function form() {
+function form(cart) {
     let order = document.querySelector("#order");
     order.addEventListener("click", e => {
         e.preventDefault();
         if (checkFields()) {
-            submitForm();
+            submitForm(cart);
         }
     })
 
@@ -216,7 +226,7 @@ function form() {
 function main() {
     let cart = new Cart();
     cart.init();
-    form();
+    form(cart);
 }
 
 function createElementFromHTML(htmlString) {
