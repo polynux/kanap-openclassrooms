@@ -37,6 +37,9 @@ class Cart {
           this.removeProduct(product);
           productElement.remove();
         } else if (e.target.className === "itemQuantity") {
+          if (Number(e.target.value) <= 0) {
+            e.target.value = 1;
+          }
           this.setProductQuantity({ id: product.id, color: product.color, quantity: e.target.value });
         }
       });

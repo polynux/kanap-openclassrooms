@@ -41,6 +41,10 @@ function checkValues(values) {
         alert("Séléctionnez une couleur!");
         return false;
     }
+    if (Number(values.quantity) <= 0) {
+        alert("Séléctionnez une quantité supérieure à 0!");
+        return false;
+    }
     return true;
 }
 
