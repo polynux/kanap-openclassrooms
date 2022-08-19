@@ -1,4 +1,4 @@
-const url = "http://grossebeut.eu:3000/api";
+const url = "http://localhost:3000/api";
 
 class Cart {
   constructor() {
@@ -232,7 +232,7 @@ function submitForm(cart) {
       return res.json();
     })
     .then(res => {
-      location.href = "/confirmation?orderId=" + res.orderId;
+      location.href = "/confirmation.html?orderId=" + res.orderId;
     })
     .catch(alert);
 }
