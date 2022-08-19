@@ -1,4 +1,4 @@
-const url = "http://grossebeut.eu:3000/api";
+const url = "http://localhost:3000/api";
 
 async function main() {
   let products = await (await fetch(url + "/products")).json();
