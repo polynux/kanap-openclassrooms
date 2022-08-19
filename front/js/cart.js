@@ -232,7 +232,7 @@ function submitForm(cart) {
       return res.json();
     })
     .then(res => {
-      location.href = "/confirmation.html?orderId=" + res.orderId;
+      location.href = "./confirmation.html?orderId=" + res.orderId;
     })
     .catch(alert);
 }
@@ -240,7 +240,9 @@ function submitForm(cart) {
 function checkFieldsOnFocus() {
   for (let field of fields) {
     field.field.addEventListener("focusout", () => {
-      if (!field.validator(field.field.value)) {
+      if (field.field.value.length === 0) {
+        setErrMsg(field.field, "Veuillez renseigner votre " + field.name);
+      } else if (!field.validator(field.value)) {
         setErrMsg(field.field, field.errMsg);
       } else {
         clearErrMsg(field.field);
@@ -253,6 +255,11 @@ function checkFieldsOnSubmit(cart) {
   for (let field of fields) {
     if (!field.validator(field.field.value)) {
       setErrMsg(field.field, field.errMsg);
+      return false;
+    }
+    if (field.field.value.length === 0) {
+      setErrMsg(field.field, "Veuillez renseigner votre " + field.name);
+      return false;
     }
   }
   if (fields.every(field => field.validator(field.field.value))) {
